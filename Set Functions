@@ -1,0 +1,36 @@
+# Set Functions
+# set function
+k = {1,2,3,5}
+k = set(k)
+print(k)
+
+# creates immutable sets of elements
+# adding elemests in sets
+k.update([6,4])
+print(k)
+
+# Discard the element
+#
+# que pasa hermosa
+k.discard(4)
+print(k)
+
+# to remove the first element in the set
+k.pop()
+
+# union fucnction on sets
+# use |
+a = {1 , 2 , 45, 78 , 94}
+b = {1, 45, 56, 78}
+c = a|b
+print(c)
+
+# intersection function
+# &
+d = a & b
+print(d)
+
+for i in k:
+    print(str(i)+"th element")
+
+s
