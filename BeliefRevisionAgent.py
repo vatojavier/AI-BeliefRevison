@@ -1,19 +1,23 @@
 from itertools import chain, combinations
-
+#from Resolution_algo import resolution
 
 class Agent:
-    KB = []
+    KB = set()
 
     def __init__(self, *arg):
 
         for disjunction in arg:
-            self.KB.append(disjunction)
+            self.addformula(disjunction)
 
     def addformula(self, formula):
         """Basically this is Expansion"""
 
-        if formula not in self.KB:
-            self.KB.append(formula)
+        formula = frozenset(formula)
+        if not formula.issubset(self.KB):
+            self.KB.add(formula)
+
+        #if formula not in self.KB:
+         #   self.KB.add(formula)
 
     def revision(self, p):
         """Does resolution with all the subsets of the KB and p, when finding one subset with empty clause:
@@ -24,13 +28,12 @@ class Agent:
            Pass p as original formula pls! (not negated)
            """
 
-        remainders = []  # [ [{1,2,3}, {1,2}], [{1,2,3}], [{1,2}] ]
+        remainders = []  # [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
         subsets = self.powerset(self.KB)  # All subsets of KB
 
         for i in subsets:
-            print(list(i))
-            if self.resolution(list(i), p):
-                remainders.append(list(i))   # Its a remainder
+            if self.resolution(set(i), p):
+                remainders.append(frozenset(i))   # Its a remainder
 
         maxinclusive=[]
         #  Find the maximal inclusive remainder
@@ -41,12 +44,12 @@ class Agent:
             if len(remainder) > len(maxinclusive):
                 maxinclusive = remainder
 
-        self.KB = maxinclusive
+        self.KB = set(maxinclusive)
         self.addformula(p)
         return remainders
 
     #  Replace with Zeeshan's code
-    def resolution(self, kb, p):
+    def resolution(self, belief, alpha):
         """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
             if resolution gives empty clause (TRUE), p is consistent and expansion is done,
             otherwise, Revision is done"""
@@ -55,8 +58,12 @@ class Agent:
             #expansion(p)
         #else:
             #revision(p)
-        return True
 
+        clauses = self.KB
+        clauses.add(negate(alpha))
+        print(clauses)
+
+        return True
 
     @staticmethod
     def powerset(iterable):
@@ -64,3 +71,11 @@ class Agent:
         s = list(iterable)
         return chain.from_iterable(combinations(s, r) for r in range(1, len(s) + 1))
 
+
+def negate(formula):
+    """Negates a clause in CNF, so it will be converted from disjuntions to conjuctions """
+    negated = set()
+    for atom in formula:
+        negated.add(atom * -1)
+
+    return frozenset(negated)
