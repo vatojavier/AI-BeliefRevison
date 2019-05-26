@@ -16,9 +16,6 @@ class Agent:
         if not formula.issubset(self.KB):
             self.KB.add(formula)
 
-        #if formula not in self.KB:
-         #   self.KB.add(formula)
-
     def revision(self, p):
         """Does resolution with all the subsets of the KB and p, when finding one subset with empty clause:
            -Add that subset to remainders,
@@ -62,6 +59,12 @@ class Agent:
         clauses = self.KB
         clauses.add(negate(alpha))
         print(clauses)
+
+        new = set()
+
+        for clausei in clauses:
+            for clausej in clauses:
+                pass
 
         return True
 
