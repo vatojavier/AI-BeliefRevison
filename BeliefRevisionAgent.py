@@ -10,21 +10,39 @@ class Agent:
             self.KB.append(disjunction)
 
     def addformula(self, formula):
+        """Basically this is Expansion"""
+
         if formula not in self.KB:
             self.KB.append(formula)
 
     def revision(self, p):
-        """Does resolution with all the subsets of the KB, when finding one subset with empty clause:
-           set KB to it and add p"""
+        """Does resolution with all the subsets of the KB and p, when finding one subset with empty clause:
+           -Add that subset to remainders,
+           -Choose the best one, HOW!?
+           -Set KB to it + p
 
-        remainders = []
-        p = self.powerset(self.KB)  # All subsets of KB
+           Pass p as original formula pls! (not negated)
+           """
 
-        for i in p:
+        remainders = []  # [ [{1,2,3}, {1,2}], [{1,2,3}], [{1,2}] ]
+        subsets = self.powerset(self.KB)  # All subsets of KB
+
+        for i in subsets:
             print(list(i))
             if self.resolution(list(i), p):
                 remainders.append(list(i))   # Its a remainder
 
+        maxinclusive=[]
+        #  Find the maximal inclusive remainder
+        if len(remainders) > 0:
+            maxinclusive = remainders[0]
+
+        for remainder in remainders:
+            if len(remainder) > len(maxinclusive):
+                maxinclusive = remainder
+
+        self.KB = maxinclusive
+        self.addformula(p)
         return remainders
 
     #  Replace with Zeeshan's code
@@ -37,7 +55,7 @@ class Agent:
             #expansion(p)
         #else:
             #revision(p)
-        pass
+        return True
 
 
     @staticmethod
