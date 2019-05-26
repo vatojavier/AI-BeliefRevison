@@ -13,18 +13,32 @@ class Agent:
         if formula not in self.KB:
             self.KB.append(formula)
 
-    def revision(self):
-        a = []
-        p = self.powerset(self.KB)
-        #a.append(*p)
+    def revision(self, p):
+        """Does resolution with all the subsets of the KB, when finding one subset with empty clause:
+           set KB to it and add p"""
+
+        remainders = []
+        p = self.powerset(self.KB)  # All subsets of KB
 
         for i in p:
-            #print(type(list(i)))
-            a.append(list(i))   #Maybe remove list(i)
-            #print(type(a))
+            print(list(i))
+            if self.resolution(list(i), p):
+                remainders.append(list(i))   # Its a remainder
 
-        print(a)
-        return a
+        return remainders
+
+    #  Replace with Zeeshan's code
+    def resolution(self, kb, p):
+        """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
+            if resolution gives empty clause (TRUE), p is consistent and expansion is done,
+            otherwise, Revision is done"""
+
+        #if empty clause:
+            #expansion(p)
+        #else:
+            #revision(p)
+        pass
+
 
     @staticmethod
     def powerset(iterable):
