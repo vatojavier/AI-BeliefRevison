@@ -22,13 +22,12 @@ class Agent:
             otherwise, Revision is done"""
 
         if self.resolution(self.KB, formula):  # Is KB consisten with formula? Careful with negation,
-            print("Not consistent!")
+            print("Not consistent! Doing revision")
             self.revision(formula)
 
         else:
             print("Consistent!")
             self.addformula(formula)
-
 
     def revision(self, p):
         """Does resolution with all the subsets of the KB and p, when finding one subset with empty clause:
@@ -39,13 +38,14 @@ class Agent:
            Pass p as original formula pls! (not negated)
            """
 
-        remainders = []  # [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
-        subsets = powerset(self.KB)  # All subsets of KB
+        remainders = []
+        subsets = powerset(self.KB)  # All subsets of KB: [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
 
         for i in subsets:
-            if self.resolution(set(i), p):
-                remainders.append(frozenset(i))   # Its a remainder
+            if not self.resolution(set(i), p):
+                remainders.append(i)   # Its a remainder
 
+        print("Remainders: " + str(remainders))
         maxinclusive=[]
         #  Find the maximal inclusive remainder
         if len(remainders) > 0:
@@ -55,8 +55,8 @@ class Agent:
             if len(remainder) > len(maxinclusive):
                 maxinclusive = remainder
 
+        print("Selected remaider: " + str(maxinclusive))
         self.KB = set(maxinclusive)
-        print("Adding "+ str(p))
         self.addformula(p)
         return remainders
 
@@ -73,7 +73,6 @@ class Agent:
 
         clauses = belief
         clauses.add(frozenset(alpha))
-
         new = set()
 
         list_clauses = list(clauses)
@@ -98,15 +97,24 @@ class Agent:
         return clauses
 
     def printkb(self):
-        print("KB = { ", end="")
+        print("KB = {", end="")
+
         for frozset in self.KB:
+            i = 0
             print("{", end="")
+            natoms = len(frozset)
             for atom in frozset:
-                print(atom, end=" ")
-            print("}", end="")
-        print(" }")
+                i = i + 1
+                print(atom, end="")
+                if i < natoms:
+                    print(",", end="")
+
+            print("}", end=" ")
+        print("}")
+
 
 def resolve(a, b):
+
     x1 = set(a.copy())
     y1 = set(b.copy())
     sol = set([])
