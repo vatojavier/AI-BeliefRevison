@@ -17,6 +17,9 @@ class Agent:
             self.KB.add(formula)
 
     def agmRevison(self, formula):
+        """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
+            if resolution gives empty clause (TRUE), p is consistent and expansion is done,
+            otherwise, Revision is done"""
 
         if self.resolution(self.KB, formula):  # Is KB consisten with formula? Careful with negation,
             print("Not consistent!")
@@ -69,7 +72,7 @@ class Agent:
             """
 
         clauses = belief
-        clauses.add(negate(alpha))
+        clauses.add(frozenset(alpha))
 
         new = set()
 
@@ -94,6 +97,14 @@ class Agent:
 
         return clauses
 
+    def printkb(self):
+        print("KB = { ", end="")
+        for frozset in self.KB:
+            print("{", end="")
+            for atom in frozset:
+                print(atom, end=" ")
+            print("}", end="")
+        print(" }")
 
 def resolve(a, b):
     x1 = set(a.copy())
