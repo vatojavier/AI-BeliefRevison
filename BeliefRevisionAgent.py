@@ -22,11 +22,11 @@ class Agent:
             otherwise, Revision is done"""
 
         if self.resolution(self.KB, formula):  # Is KB consisten with formula? Careful with negation,
-            print("Not consistent! Doing revision")
+            #print("Not consistent! Doing revision")
             self.revision(formula)
 
         else:
-            print("Consistent!")
+            #print("Consistent!")
             self.addformula(formula)
 
     def revision(self, p):
@@ -42,59 +42,68 @@ class Agent:
         subsets = powerset(self.KB)  # All subsets of KB: [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
 
         for i in subsets:
-            if not self.resolution(set(i), p):
-                remainders.append(i)   # Its a remainder
+            #print(i)
+            #print("Doing resolution of " + str(set(i)) + " and " + str(p), end="")
+            if not self.resolution(set(i), negate(p)):
+                #print("Looks like a remaider!")  # subset i does not imply p
 
-        print("Remainders: " + str(remainders))
-        maxinclusive=[]
-        #  Find the maximal inclusive remainder
+                # Check if new info p is consistent with that (pseudo)remainder
+                if not self.resolution(set(i), p):
+                    remainders.append(i)  # Its a remainder
+
+        # Find the maximal inclusive remainder
+        maxinclusive = []
         if len(remainders) > 0:
             maxinclusive = remainders[0]
 
         for remainder in remainders:
-            if len(remainder) > len(maxinclusive):
+            if len(remainder[0]) > len(maxinclusive):
                 maxinclusive = remainder
 
-        print("Selected remaider: " + str(maxinclusive))
+        #print("Remainders: " + str(remainders))
+        #print("Selected remainder: " + str(maxinclusive))
         self.KB = set(maxinclusive)
         self.addformula(p)
         return remainders
 
-    #  Replace with Zeeshan's code
     def resolution(self, belief, alpha):
         """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
             if resolution gives empty clause (TRUE), p is consistent and expansion is done,
             otherwise, Revision is done
 
-            -True if empty clause
+            -True if empty clause with alpha
             -False if the resolved are subset of belief
             -Resolved clauses if
             """
 
-        clauses = belief
-        clauses.add(frozenset(alpha))
-        new = set()
+        clauses = belief.copy()
 
-        list_clauses = list(clauses)
+        clauses.add(frozenset(alpha))
+
+        new = set()
         resolvents = set()
 
-        for i in range(len(list_clauses)):
-            for j in range(i + 1, len(list_clauses)):
+        while 1:
+            list_clauses = list(clauses)
 
-                resolved = resolve(list_clauses[i], list_clauses[j])
-                #print("Resolving " + str(list_clauses[i]) + "and " + str(list_clauses[j]))
-                if len(resolved) == 0:
-                    return True
+            for i in range(len(list_clauses)):
+                for j in range(i + 1, len(list_clauses)):
 
-                resolvents.add(frozenset(resolved))
-                new = new | resolvents
+                    resolved = resolve(list_clauses[i], list_clauses[j])
+                   # print("Resolving " + str(list_clauses[i]) + "and " + str(list_clauses[j]) + " ")
+                   # print(resolved)
 
-        if new.issubset(resolvents):
-            return False
+                    if len(resolved) == 0:
+                        return True
 
-        clauses = clauses | new
+                    resolvents.add(frozenset(resolved))
+                    new = new | resolvents
 
-        return clauses
+            #print("vamo " + str(new) + str(resolvents))
+            if new.issubset(clauses):
+                return False
+
+            clauses = clauses | new
 
     def printkb(self):
         print("KB = {", end="")
