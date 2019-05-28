@@ -7,7 +7,7 @@ def ex1():
     agent.printkb()
     print("New info: " + str(new_info), end="\n\n")
 
-    agent.agmRevison(new_info)
+    agent.agm_revison(new_info)
     agent.printkb()
 
 
@@ -18,7 +18,7 @@ def ex2():
     agent.printkb()
     print("New info: " + str(new_info), end="\n\n")
 
-    agent.agmRevison(new_info)
+    agent.agm_revison(new_info)
     agent.printkb()
 
 
@@ -29,7 +29,7 @@ def ex3():
     agent.printkb()
     print("New info: " + str(new_info), end="\n\n")
 
-    agent.agmRevison(new_info)
+    agent.agm_revison(new_info)
     agent.printkb()
 
 

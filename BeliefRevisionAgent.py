@@ -7,27 +7,25 @@ class Agent:
     def __init__(self, *arg):
 
         for disjunction in arg:
-            self.addformula(disjunction)
+            self.add_formula(disjunction)
 
-    def addformula(self, formula):
+    def add_formula(self, formula):
         """Basically this is Expansion"""
 
         formula = frozenset(formula)
         if not formula.issubset(self.KB):
             self.KB.add(formula)
 
-    def agmRevison(self, formula):
+    def agm_revison(self, formula):
         """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
             if resolution gives empty clause (TRUE), p is consistent and expansion is done,
             otherwise, Revision is done"""
 
-        if self.resolution(self.KB, formula):  # Is KB consisten with formula? Careful with negation,
-            #print("Not consistent! Doing revision")
+        if resolution(self.KB, formula):  # Is KB consisten with formula? Careful with negation,
             self.revision(formula)
 
         else:
-            #print("Consistent!")
-            self.addformula(formula)
+            self.add_formula(formula)
 
     def revision(self, p):
         """Does resolution with all the subsets of the KB and p, when finding one subset with empty clause:
@@ -42,13 +40,9 @@ class Agent:
         subsets = powerset(self.KB)  # All subsets of KB: [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
 
         for i in subsets:
-            #print(i)
-            #print("Doing resolution of " + str(set(i)) + " and " + str(p), end="")
-            if not self.resolution(set(i), negate(p)):
-                #print("Looks like a remaider!")  # subset i does not imply p
-
+            if not resolution(set(i), negate(p)):
                 # Check if new info p is consistent with that (pseudo)remainder
-                if not self.resolution(set(i), p):
+                if not resolution(set(i), p):
                     remainders.append(i)  # Its a remainder
 
         # Find the maximal inclusive remainder
@@ -60,50 +54,9 @@ class Agent:
             if len(remainder[0]) > len(maxinclusive):
                 maxinclusive = remainder
 
-        #print("Remainders: " + str(remainders))
-        #print("Selected remainder: " + str(maxinclusive))
         self.KB = set(maxinclusive)
-        self.addformula(p)
+        self.add_formula(p)
         return remainders
-
-    def resolution(self, belief, alpha):
-        """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
-            if resolution gives empty clause (TRUE), p is consistent and expansion is done,
-            otherwise, Revision is done
-
-            -True if empty clause with alpha
-            -False if the resolved are subset of belief
-            -Resolved clauses if
-            """
-
-        clauses = belief.copy()
-
-        clauses.add(frozenset(alpha))
-
-        new = set()
-        resolvents = set()
-
-        while 1:
-            list_clauses = list(clauses)
-
-            for i in range(len(list_clauses)):
-                for j in range(i + 1, len(list_clauses)):
-
-                    resolved = resolve(list_clauses[i], list_clauses[j])
-                   # print("Resolving " + str(list_clauses[i]) + "and " + str(list_clauses[j]) + " ")
-                   # print(resolved)
-
-                    if len(resolved) == 0:
-                        return True
-
-                    resolvents.add(frozenset(resolved))
-                    new = new | resolvents
-
-            #print("vamo " + str(new) + str(resolvents))
-            if new.issubset(clauses):
-                return False
-
-            clauses = clauses | new
 
     def printkb(self):
         print("KB = {", end="")
@@ -120,6 +73,41 @@ class Agent:
 
             print("}", end=" ")
         print("}")
+
+
+def resolution(belief, alpha):
+    """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
+        if resolution gives empty clause (TRUE), p is consistent and expansion is done,
+        otherwise, Revision is done
+
+        -True if empty clause with alpha
+        -False if the resolved are subset of belief
+        -Resolved clauses if
+        """
+
+    clauses = belief.copy()
+
+    clauses.add(frozenset(alpha))
+
+    new = set()
+    resolvents = set()
+
+    while 1:
+        list_clauses = list(clauses)
+
+        for i in range(len(list_clauses)):
+            for j in range(i + 1, len(list_clauses)):
+                resolved = resolve(list_clauses[i], list_clauses[j])
+                if len(resolved) == 0:
+                    return True
+
+                resolvents.add(frozenset(resolved))
+                new = new | resolvents
+
+        if new.issubset(clauses):
+            return False
+
+        clauses = clauses | new
 
 
 def resolve(a, b):
@@ -147,7 +135,7 @@ def resolve(a, b):
 
 
 def powerset(iterable):
-    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    """powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"""
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(1, len(s) + 1))
 
