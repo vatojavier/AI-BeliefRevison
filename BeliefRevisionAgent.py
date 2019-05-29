@@ -3,6 +3,7 @@ from itertools import chain, combinations
 
 class Agent:
     belief_base = set()
+    language = {'0': 0}
 
     def __init__(self, *arg):
 
@@ -76,14 +77,25 @@ class Agent:
             i = 0
             print("{", end="")
             natoms = len(frozset)
-            for atom in frozset:
+            for literal in frozset:
                 i = i + 1
-                print(atom, end="")
+                if literal < 0:
+                    print("-" + get_key(literal*-1, self.language), end="")
+                else:
+                    print(get_key(literal, self.language), end="")
+
                 if i < natoms:
-                    print(",", end="")
+                    print(" V ", end="")
 
             print("}", end=" ")
         print("}")
+
+
+def get_key(value, language):
+
+    for key in language:
+        if value == language[key]:
+            return key
 
 
 def find_remainder(b, p, remainders):

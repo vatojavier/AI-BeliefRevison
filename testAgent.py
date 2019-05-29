@@ -88,8 +88,8 @@ def convert_to_numbers(new_belief, world1):
     return clause
 
 
-def is_new_char(char, dict):
-    value = dict.get(char)
+def is_new_char(char, dictionary):
+    value = dictionary.get(char)
 
     if value is None:
         return True
@@ -102,12 +102,10 @@ if __name__ == "__main__":
     agent = Agent()
     agent.printkb()
 
-    world = {'0': 0}
-
     while 1:
         new_info = input("\nEnter new info: ")
 
-        clause_num = convert_to_numbers(new_info, world)
+        clause_num = convert_to_numbers(new_info, agent.language)
 
         agent.agm_revison(clause_num)
 
