@@ -22,18 +22,18 @@ a V -b
 
 After pressing enter, AGM revision will be done and the new Belief Set will be printed in screen.
 
-Doing this you can add as much as new clauses as wanted, i.e:
+You can add as much as new clauses as wanted, i.e:
 ```
 Belief Base = {}
 
 Enter new Info: a V b
 
-Update new Belief set:
+Updated new Belief set:
 Belief base:= {{a V b} }
 
 Enter new Info: -c
  
-Update new Belief set:
+Updated new Belief set:
 Belief base:= {{a V b}, {-c} }
 ```
 To exit the program press ctrl + c
