@@ -2,8 +2,8 @@ from BeliefRevisionAgent import Agent
 
 
 def ex1():
-    agent = Agent({3}, {1, 2})
-    new_info = {-3}
+    agent = Agent()
+    new_info = {1}
     agent.printkb()
     print("New info: " + str(new_info), end="\n\n")
 
@@ -33,7 +33,31 @@ def ex3():
     agent.printkb()
 
 
+def ex4():
+    agent = Agent({1}, {2}, {1,2}, {-1,2}, {-2,1})
+    new_info = {-1}
+
+    agent.printkb()
+    print("New info: " + str(new_info), end="\n\n")
+
+    agent.agm_revison(new_info)
+    agent.printkb()
+
+def ex1():
+    agent = Agent({1}, {-1,2})
+    new_info = {1, 2}
+
+    agent.printkb()
+    print("New info: " + str(new_info), end="\n\n")
+
+    agent.agm_revison(new_info)
+    agent.printkb()
+
+
+
 if __name__ == "__main__":
 
-    ex3()
+
+
+    ex1()
 

@@ -2,7 +2,7 @@ from itertools import chain, combinations
 
 
 class Agent:
-    KB = set()
+    belief_base = set()
 
     def __init__(self, *arg):
 
@@ -13,15 +13,15 @@ class Agent:
         """Basically this is Expansion"""
 
         formula = frozenset(formula)
-        if not formula.issubset(self.KB):
-            self.KB.add(formula)
+        if not formula.issubset(self.belief_base):
+            self.belief_base.add(formula)
 
     def agm_revison(self, formula):
         """Checks whether the new formula is logically entailed by the KB resolution(KB,not(p)):
             if resolution gives empty clause (TRUE), p is consistent and expansion is done,
             otherwise, Revision is done"""
 
-        if resolution(self.KB, formula):  # Is KB consisten with formula? Careful with negation,
+        if resolution(self.belief_base, formula):  # Is KB consisten with formula? Careful with negation,
             self.revision(formula)
 
         else:
@@ -37,31 +37,46 @@ class Agent:
            """
 
         remainders = []
-        subsets = powerset(self.KB)  # All subsets of KB: [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
+        subsets = powerset(self.belief_base)  # All subsets of KB: [ {{1,2,3}, {1,2}]}, {{1,2,3}}, {{1,2}} ]
 
+        # checking consistency remainders
         for i in subsets:
-            if not resolution(set(i), negate(p)):
-                # Check if new info p is consistent with that (pseudo)remainder
-                if not resolution(set(i), p):
-                    remainders.append(i)  # Its a remainder
+            if not resolution(set(i), p):
+                remainders.append(set(i))
 
-        # Find the maximal inclusive remainder
-        maxinclusive = []
+        # Check if a set is subset o the others
+        print(remainders)
+        delete_set = []
+        for i in remainders:
+            for j in remainders:
+                if i != j:
+                    if i.issubset(j):
+                        print(str(i) + "Is subset of " + str(j))
+                        if i not in delete_set:
+                            delete_set.append(i)
+
+        for i in delete_set:
+            remainders.remove(i)
+            print("deleted" + str(i))
+
+
+        #  Find the maximal inclusive remainder
         if len(remainders) > 0:
-            maxinclusive = remainders[0]
+            choosen_rem = remainders[0]
 
         for remainder in remainders:
-            if len(remainder[0]) > len(maxinclusive):
-                maxinclusive = remainder
+            if len(remainder) >= len(choosen_rem):
+                choosen_rem = remainder
 
-        self.KB = set(maxinclusive)
+        print(remainders)
+        self.belief_base = choosen_rem
         self.add_formula(p)
         return remainders
 
     def printkb(self):
         print("KB = {", end="")
 
-        for frozset in self.KB:
+        for frozset in self.belief_base:
             i = 0
             print("{", end="")
             natoms = len(frozset)
@@ -73,6 +88,22 @@ class Agent:
 
             print("}", end=" ")
         print("}")
+
+
+def find_remainder(b, p, remainders):
+
+    if b.issubset(remainders):
+        return False
+
+    if not resolution(b, p):
+        remainders.append(b)
+
+    for clause in b:
+        b2 = b.copy()
+        b2.discard(clause)
+        if len(b) == 0:
+            return False
+        find_remainder(b2, p, remainders)
 
 
 def resolution(belief, alpha):
