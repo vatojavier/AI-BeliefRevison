@@ -45,21 +45,18 @@ class Agent:
                 remainders.append(set(i))
 
         # Check if a set is subset o the others
-        print(remainders)
         delete_set = []
         for i in remainders:
             for j in remainders:
                 if i != j:
                     if i.issubset(j):
-                        print(str(i) + "Is subset of " + str(j))
                         if i not in delete_set:
                             delete_set.append(i)
 
         for i in delete_set:
             remainders.remove(i)
-            print("deleted" + str(i))
 
-
+        choosen_rem = set()
         #  Find the maximal inclusive remainder
         if len(remainders) > 0:
             choosen_rem = remainders[0]
@@ -68,7 +65,6 @@ class Agent:
             if len(remainder) >= len(choosen_rem):
                 choosen_rem = remainder
 
-        print(remainders)
         self.belief_base = choosen_rem
         self.add_formula(p)
         return remainders
@@ -151,13 +147,9 @@ def resolve(a, b):
         element = x1.pop()
         as1 = set([])
         as1.update([-1 * element])
-        # print("as1 = " + str(as1))
-        # print(as1.issubset(y1))
 
         if as1.issubset(y1):
             y1.discard(as1.pop())
-            # print("y1 after discarding" + str(y1))
-
         else:
             sol.update([element])
 
