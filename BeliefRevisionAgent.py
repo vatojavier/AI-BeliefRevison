@@ -74,7 +74,7 @@ class Agent:
         return remainders
 
     def printkb(self):
-        print("KB = {", end="")
+        print("Belief base:= {", end="")
 
         for frozset in self.belief_base:
             i = 0
