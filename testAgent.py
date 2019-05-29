@@ -109,6 +109,6 @@ if __name__ == "__main__":
 
         agent.agm_revison(clause_num)
 
-        print("\nUpdate new Belief set:")
+        print("\nUpdated new Belief set:")
         agent.printkb()
 

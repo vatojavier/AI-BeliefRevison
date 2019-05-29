@@ -36,3 +36,4 @@ Enter new Info: -c
 Update new Belief set:
 Belief base:= {{a V b}, {-c} }
 ```
+To exit the program press ctrl + c
