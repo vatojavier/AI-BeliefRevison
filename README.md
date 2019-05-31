@@ -1,6 +1,6 @@
-#Belief Revision assignment
+# Belief Revision assignment
 
-##Execution
+## Execution
 It is required to have python3.x version
 
 To execute the program open a terminal in the folder beliefRevision that contains
@@ -12,7 +12,7 @@ or
 
 `python3 testAgent.py`
 
-##Usage
+## Usage
 The program will execute and print the initial empty Belief Base in CNF. Then it is asked to input new information which is 
 necessary to be a clause of disjuntions and press enter (disjunction represented as 'v' or 'V' and negated literals with a  '-' 
 before them) for 
