@@ -1,4 +1,4 @@
-# Belief Revision assignment
+# Belief Revision Artificial Intelligence
 
 ## Execution
 It is required to have python3.x version
